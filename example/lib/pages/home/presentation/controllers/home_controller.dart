@@ -14,7 +14,6 @@ class HomeController extends SuperController<CasesModel> {
 
     //Loading, Success, Error handle with 1 line of code
     append(() => homeRepository.getCases);
-    Get.toNamed(page)
   }
 
   Country getCountryById(String id) {

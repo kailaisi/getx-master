@@ -14,7 +14,7 @@ class RouterReportManager<T> {
   /// using the `Get.reference`.
   /// Experimental feature to keep the lifecycle and memory management with
   /// non-singleton instances.
-  ///
+  /// Route销毁时需要执行的方法（主要是controller中的onClose()方法）
   static final Map<Route?, HashSet<Function>> _routesByCreate = {};
 
   void printInstanceStack() {
@@ -46,6 +46,7 @@ class RouterReportManager<T> {
     _routesByCreate.clear();
   }
 
+  // 所有帮当到当前Route的GetLifeCycleBase进行记录，销毁时，执行onDelete方法
   static void appendRouteByCreate(GetLifeCycleBase i) {
     _routesByCreate[_current] ??= HashSet<Function>();
     // _routesByCreate[Get.reference]!.add(i.onDelete as Function);
@@ -55,6 +56,7 @@ class RouterReportManager<T> {
   static void reportRouteDispose(Route disposed) {
     if (Get.smartManagement != SmartManagement.onlyBuilder) {
       WidgetsBinding.instance!.addPostFrameCallback((_) {
+        // 移除所有绑定到Route上的依赖
         _removeDependencyByRoute(disposed);
       });
     }
@@ -106,6 +108,7 @@ class RouterReportManager<T> {
     }
 
     for (final element in keysToRemove) {
+      // 调用delete方法
       final value = GetInstance().delete(key: element);
       if (value) {
         _routesKey[routeName]?.remove(element);

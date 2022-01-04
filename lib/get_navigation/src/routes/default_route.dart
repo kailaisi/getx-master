@@ -17,6 +17,7 @@ mixin PageRouteReportMixin<T> on Route<T> {
   @override
   void dispose() {
     super.dispose();
+    // 通知Route销毁
     RouterReportManager.reportRouteDispose(this);
   }
 }
