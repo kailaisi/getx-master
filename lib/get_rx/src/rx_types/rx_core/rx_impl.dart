@@ -3,7 +3,7 @@ part of rx_types;
 /// global object that registers against `GetX` and `Obx`, and allows the
 /// reactivity
 /// of those `Widgets` and Rx values.
-
+///  Rx对象功能
 mixin RxObjectMixin<T> on NotifyManager<T> {
   late T _value;
 
@@ -96,10 +96,11 @@ mixin RxObjectMixin<T> on NotifyManager<T> {
   /// Widget, only if it's different from the previous value.
   set value(T val) {
     if (subject.isClosed) return;
+    // 如果数据没有变化，这里不会发送通知
     if (_value == val && !firstRebuild) return;
     firstRebuild = false;
     _value = val;
-
+    // 这里会执行
     subject.add(_value);
   }
 
@@ -142,8 +143,11 @@ mixin RxObjectMixin<T> on NotifyManager<T> {
 
 class RxNotifier<T> = RxInterface<T> with NotifyManager<T>;
 
+// 通知管理器
 mixin NotifyManager<T> {
   GetStream<T> subject = GetStream<T>();
+
+  // 所有的观察者
   final _subscriptions = <GetStream, List<StreamSubscription>>{};
 
   bool get canUpdate => _subscriptions.isNotEmpty;
@@ -188,6 +192,7 @@ mixin NotifyManager<T> {
 }
 
 /// Base Rx class that manages all the stream logic for any Type.
+/// Rx基类，管理任何类型的流逻辑。
 abstract class _RxImpl<T> extends RxNotifier<T> with RxObjectMixin<T> {
   _RxImpl(T initial) {
     _value = initial;

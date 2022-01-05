@@ -4,6 +4,7 @@ part of rx_types;
 /// so powerful.
 /// This interface is the contract that _RxImpl]<T> uses in all it's
 /// subclass.
+/// _RxImpl<T> 需要符合的约定
 abstract class RxInterface<T> {
   bool get canUpdate;
 

@@ -14,6 +14,8 @@ class GetStream<T> {
   FutureOr<void> Function()? onCancel;
 
   GetStream({this.onListen, this.onPause, this.onResume, this.onCancel});
+
+  // 所有订阅当前流的观察者，当数据发送变化的时候，会遍历调用该对象的方法进行通知刷新
   List<LightSubscription<T>>? _onData = <LightSubscription<T>>[];
 
   bool? _isBusy = false;
