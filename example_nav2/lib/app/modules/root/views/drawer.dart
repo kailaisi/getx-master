@@ -30,7 +30,7 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             title: Text('Settings'),
             onTap: () {
-              Get.rootDelegate.toNamed(Routes.SETTINGS);
+              Get.toNamed(Routes.SETTINGS);
               //to close the drawer
 
               Navigator.of(context).pop();

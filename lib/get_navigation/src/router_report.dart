@@ -101,6 +101,7 @@ class RouterReportManager<T> {
       for (final onClose in _routesByCreate[routeName]!) {
         // assure the [DisposableInterface] instance holding a reference
         // to onClose() wasn't disposed.
+        // 重点方法1 调用onClose() 方法
         onClose();
       }
       _routesByCreate[routeName]!.clear();
@@ -108,7 +109,7 @@ class RouterReportManager<T> {
     }
 
     for (final element in keysToRemove) {
-      // 调用delete方法
+      // 重点方法2 调用delete方法，从内存中移除
       final value = GetInstance().delete(key: element);
       if (value) {
         _routesKey[routeName]?.remove(element);

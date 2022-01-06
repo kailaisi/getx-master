@@ -35,7 +35,7 @@ class HomeView extends GetView<HomeController> {
                   delegate.toNamed(Routes.PROFILE);
                   break;
                 case 2:
-                  delegate.toNamed(Routes.PRODUCTS);
+                  Get.toNamed(Routes.PRODUCTS);
                   break;
                 default:
               }

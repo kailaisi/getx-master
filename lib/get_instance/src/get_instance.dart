@@ -205,13 +205,13 @@ class GetInstance {
     final isInit = _singl[key]!.isInit;
     S? i;
     if (!isInit) {
-      // 未初始化过 ，创建对象
+      // 重点方法1 未初始化过 ，创建对象
       i = _startController<S>(tag: name);
       if (_singl[key]!.isSingleton!) {
-        // 单例的话，只创建一次，每次
+        // 单例的话，只创建一次，
         _singl[key]!.isInit = true;
         if (Get.smartManagement != SmartManagement.onlyBuilder) {
-          // 如果管理模式是非onlyBuilder，将controller绑定到对应的PageRoute
+          // 重点方法2  如果管理模式是非onlyBuilder，将controller绑定到对应的Route
           RouterReportManager.reportDependencyLinkedToRoute(_getKey(S, name));
         }
       }
@@ -255,7 +255,7 @@ class GetInstance {
   /// Initializes the controller
   S _startController<S>({String? tag}) {
     final key = _getKey(S, tag);
-    // 调用传入的builderFunc来创建对象
+    // 调用传入的builderFunc来创建对象，会有：Instance "$S" has been created 的日志输出
     final i = _singl[key]!.getDependency() as S;
     if (i is GetLifeCycleBase) {
       // 如果创建的类是GetLifeCycleBase的子类，则执行onStart->onInit()方法
@@ -375,25 +375,29 @@ class GetInstance {
     }
     final i = builder.dependency;
 
+    // Service类型不销毁
     if (i is GetxServiceMixin && !force) {
       return false;
     }
-
+    // 调用onDelete()方法
     if (i is GetLifeCycleBase) {
       i.onDelete();
       Get.log('"$newKey" onDelete() called');
     }
 
     if (builder.fenix) {
+      // 对象如果支持下次find的时候重新创建。 则只删除对象，不删除工厂。
       builder.dependency = null;
       builder.isInit = false;
       return true;
     } else {
       if (dep.lateRemove != null) {
+        // isDirty的，直接移除lateRemove即可。
         dep.lateRemove = null;
         Get.log('"$newKey" deleted from memory');
         return false;
       } else {
+        // 直接移除_InstanceBuilderFactory，清除对象，清除对象创建工厂。
         _singl.remove(newKey);
         if (_singl.containsKey(newKey)) {
           Get.log('Error removing object "$newKey"', isError: true);
