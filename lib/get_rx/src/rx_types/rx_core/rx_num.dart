@@ -852,6 +852,7 @@ class RxInt extends Rx<int> {
   /// Addition operator.
   RxInt operator +(int other) {
     value = value + other;
+    // 返回的是当前实例，
     return this;
   }
 
@@ -870,6 +871,7 @@ class RxnInt extends Rx<int?> {
     if (value != null) {
       value = value! + other;
     }
+    // 返回的是当前实例，
     return this;
   }
 
