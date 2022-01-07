@@ -22,8 +22,11 @@ abstract class RxInterface<T> {
 
   /// Avoids an unsafe usage of the `proxy`
   static T notifyChildren<T>(RxNotifier observer, ValueGetter<T> builder) {
+    // 将原有proxy变量保存
     final _observer = RxInterface.proxy;
+    // 将observer设置为一个
     RxInterface.proxy = observer;
+    // 调用builder方法，构建对应的widget。
     final result = builder();
     if (!observer.canUpdate) {
       RxInterface.proxy = _observer;
@@ -36,6 +39,7 @@ abstract class RxInterface<T> {
       If you need to update a parent widget and a child widget, wrap each one in an Obx/GetX.
       """;
     }
+    // 恢复原有的proxy对象
     RxInterface.proxy = _observer;
     return result;
   }

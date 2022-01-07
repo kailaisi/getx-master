@@ -116,6 +116,7 @@ class GetStream<T> {
 
   LightSubscription<T> listen(void Function(T event) onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    // 创建LightSubscription实例
     final subs = LightSubscription<T>(
       removeSubscription,
       onPause: onPause,
@@ -126,8 +127,11 @@ class GetStream<T> {
       ..onError(onError)
       ..onDone(onDone)
       ..cancelOnError = cancelOnError;
+    // 将实例加入到监听者队列
     addSubscription(subs);
+    // 调用onListener方法。
     onListen?.call();
+    // 返回生成的监听者实例
     return subs;
   }
 

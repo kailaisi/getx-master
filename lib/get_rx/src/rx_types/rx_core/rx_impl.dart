@@ -100,12 +100,13 @@ mixin RxObjectMixin<T> on NotifyManager<T> {
     if (_value == val && !firstRebuild) return;
     firstRebuild = false;
     _value = val;
-    // 这里会执行
+    // 这里内部会执行notify，通知所有监听者，更新监听组件。
     subject.add(_value);
   }
 
   /// Returns the current [value]
   T get value {
+    // 获取value值的时候，会将其加入到监听者队列
     RxInterface.proxy?.addListener(subject);
     return _value;
   }
@@ -145,6 +146,7 @@ class RxNotifier<T> = RxInterface<T> with NotifyManager<T>;
 
 // 通知管理器
 mixin NotifyManager<T> {
+  // 被观察者，主题
   GetStream<T> subject = GetStream<T>();
 
   // 所有的观察者
@@ -156,7 +158,9 @@ mixin NotifyManager<T> {
   /// Subscribe to changes on the inner stream.
   void addListener(GetStream<T> rxGetx) {
     if (!_subscriptions.containsKey(rxGetx)) {
+      // listen方法，会将该函数的调用放入到rx变化时的通知队列中。当Rx数据变化时，会调用该方法
       final subs = rxGetx.listen((data) {
+        //
         if (!subject.isClosed) subject.add(data);
       });
       final listSubscriptions =

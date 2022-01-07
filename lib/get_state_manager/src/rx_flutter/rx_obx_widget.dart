@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 import '../../../get_rx/src/rx_types/rx_types.dart';
 
 typedef WidgetCallback = Widget Function();
@@ -28,6 +30,7 @@ abstract class ObxWidget extends StatefulWidget {
 
 class _ObxState extends State<ObxWidget> {
   final _observer = RxNotifier();
+  // 监听者
   late StreamSubscription subs;
 
   @override
@@ -36,6 +39,7 @@ class _ObxState extends State<ObxWidget> {
     subs = _observer.listen(_updateTree, cancelOnError: false);
   }
 
+  // 对外暴露的页面刷新函数
   void _updateTree(_) {
     if (mounted) {
       setState(() {});
